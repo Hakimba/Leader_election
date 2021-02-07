@@ -1,0 +1,11 @@
+[0m[[0m[31merror[0m] [0m[0m/Users/hakimbaaloudj/computer-science/m2/ppc/leader_election/Projet_code/src/main/scala/ElectionActor.scala:48:37: type mismatch;[0m
+[0m[[0m[31merror[0m] [0m[0m found   : akka.actor.ActorSelection[0m
+[0m[[0m[31merror[0m] [0m[0m required: Null[0m
+[0m[[0m[31merror[0m] [0m[0m               remote = getActorById(0)[0m
+[0m[[0m[31merror[0m] [0m[0m                                    ^[0m
+[0m[[0m[31merror[0m] [0m[0m/Users/hakimbaaloudj/computer-science/m2/ppc/leader_election/Projet_code/src/main/scala/ElectionActor.scala:50:37: type mismatch;[0m
+[0m[[0m[31merror[0m] [0m[0m found   : akka.actor.ActorSelection[0m
+[0m[[0m[31merror[0m] [0m[0m required: Null[0m
+[0m[[0m[31merror[0m] [0m[0m               remote = getActorById(id)[0m
+[0m[[0m[31merror[0m] [0m[0m                                    ^[0m
+[0m[[0m[31merror[0m] [0m[0mtwo errors found[0m

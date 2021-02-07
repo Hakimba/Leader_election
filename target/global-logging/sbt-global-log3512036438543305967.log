@@ -1,0 +1,12 @@
+[0m[[0m[0mdebug[0m] [0m[0m> Exec(run 0, Some(7bc9ea72-370a-484f-ad5a-39fc8898c619), Some(CommandSource(console0)))[0m
+[0m[[0m[0mdebug[0m] [0m[0mEvaluating tasks: Compile / run[0m
+[0m[[0m[0mdebug[0m] [0m[0mRunning task... Cancel: Signal, check cycles: false, forcegc: true[0m
+[0m[[0m[0minfo[0m] [0m[0mcompiling 3 Scala sources to /Users/hakimbaaloudj/computer-science/m2/ppc/leader_election/Projet_code/target/scala-2.11/classes ...[0m
+[0m[[0m[31merror[0m] [0m[0m/Users/hakimbaaloudj/computer-science/m2/ppc/leader_election/Projet_code/src/main/scala/BeatActor.scala:39:43: ';' expected but 'this' found.[0m
+[0m[[0m[31merror[0m] [0m[0m        case BeatTick => father ! IsAlive this.id[0m
+[0m[[0m[31merror[0m] [0m[0m                                          ^[0m
+[0m[[0m[31merror[0m] [0m[0mone error found[0m
+[0m[[0m[31merror[0m] [0m[0m(Compile / [31mcompileIncremental[0m) Compilation failed[0m
+[0m[[0m[31merror[0m] [0m[0mTotal time: 0 s, completed 6 févr. 2021 16:49:11[0m
+[0m[[0m[0mdebug[0m] [0m[0m> Exec(shell, None, None)[0m
+[0m[[0m[0minfo[0m] [0m[0mshutting down sbt server[0m

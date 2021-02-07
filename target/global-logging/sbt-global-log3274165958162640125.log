@@ -1,0 +1,11 @@
+[0m[[0m[0mdebug[0m] [0m[0m> Exec(compile, Some(c85d1f8f-585f-44f0-a15d-3ab94ca248f4), Some(CommandSource(console0)))[0m
+[0m[[0m[0mdebug[0m] [0m[0mEvaluating tasks: Compile / compile[0m
+[0m[[0m[0mdebug[0m] [0m[0mRunning task... Cancel: Signal, check cycles: false, forcegc: true[0m
+[0m[[0m[0minfo[0m] [0m[0mcompiling 2 Scala sources to /Users/hakimbaaloudj/computer-science/m2/ppc/leader_election/Projet_code/target/scala-2.11/classes ...[0m
+[0m[[0m[31merror[0m] [0m[0m/Users/hakimbaaloudj/computer-science/m2/ppc/leader_election/Projet_code/src/main/scala/Node.scala:55:23: not found: value isAlive[0m
+[0m[[0m[31merror[0m] [0m[0m               self ! isAlive (nodeId)[0m
+[0m[[0m[31merror[0m] [0m[0m                      ^[0m
+[0m[[0m[31merror[0m] [0m[0mone error found[0m
+[0m[[0m[31merror[0m] [0m[0m(Compile / [31mcompileIncremental[0m) Compilation failed[0m
+[0m[[0m[31merror[0m] [0m[0mTotal time: 3 s, completed 6 févr. 2021 22:53:26[0m
+[0m[[0m[0mdebug[0m] [0m[0m> Exec(shell, None, None)[0m
