@@ -74,6 +74,9 @@ class ElectionActor (val id:Int, val terminaux:List[Terminal]) extends Actor {
                val r = getNeigh(this.id)
                r ! ALG (nodesAlive,this.id)
           }
+// je passe des listes en arguments mais je les utilise pas
+// je sais pas a quoi elles servent
+// c'est la specification du prof
 
           case ALG (list, init) => {
                status match {
@@ -105,9 +108,45 @@ class ElectionActor (val id:Int, val terminaux:List[Terminal]) extends Actor {
                }
           }
 
-          case AVS (list, j) => 
+          case AVS (list, j) => {
+               status match {
+                    case Candidate () => {
+                         if (candPred == -1) {
+                              candSucc = j
+                         } else {
+                              val r = getActorById (j)
+                              r ! AVSRSP (nodesAlive,candPred)
+                              status = new Dummy()
+                         }
+                    }
+                    case Waiting () => {
+                         candSucc = j
+                    }
+               }
+          }
 
-          case AVSRSP (list, k) => 
+          case AVSRSP (list, k) => {
+               status match {
+                    case Waiting() => {
+                         if (this.id == k) {
+                              status = new Leader()
+                         } else {
+                              candPred = k
+                              if (candSucc == -1){
+                                   if (k < this.id) {
+                                        status = new Waiting ()
+                                        val r = getActorById (k)
+                                        r ! AVS (nodesAlive,this.id)
+                                   }
+                              } else {
+                                   status = new Dummy()
+                                   val r = getActorById (candSucc)
+                                   r ! AVSRSP (nodesAlive,k)
+                              }
+                         }
+                    }
+               }
+          }
 
      }
 }
