@@ -63,7 +63,6 @@ class ElectionActor (val id:Int, val terminaux:List[Terminal]) extends Actor {
           case Initiate => {
                status match {
                     case Passive() => {
-                         println("PASSIVE")
                          status = new Candidate()
                          candSucc = -1
                          candPred = -1
