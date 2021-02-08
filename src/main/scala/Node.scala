@@ -49,13 +49,14 @@ class Node (val id:Int, val terminaux:List[Terminal]) extends Actor {
                allNodes.foreach(node =>{
                     node ! IsAliveLeader (nodeId)
                })
+               checkerActor ! IsAliveLeader (nodeId)
           }
 
           case Beat (nodeId) => {
-               self ! IsAlive (nodeId)
                allNodes.foreach(node =>{
                     node ! IsAlive (nodeId)
                })
+               checkerActor ! IsAlive (nodeId)
           }
 
           // Messages venant des autres nodes : pour nous dire qui est encore en vie ou mort
