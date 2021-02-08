@@ -27,29 +27,13 @@ class ElectionActor (val id:Int, val terminaux:List[Terminal]) extends Actor {
      var status:NodeStatus = new Passive ()
 
 // assez sale pour l'instant niveau gestion d'erreurs
-     def getActorById (id:Int):ActorSelection = {
-          var remote:ActorSelection =  null
-          if (id < nodesAlive.length){
-               terminaux.foreach(n => {
-                    if (n.id == id) {
-                         remote = context.actorSelection("akka.tcp://LeaderSystem" + n.id + "@" + n.ip + ":" + n.port + "/user/Node")
-                    }
-               })
-          } else {
-               println("Id > length of the list of Actors")
-          }
-          
-          return remote
-     }
 
-     def getNeigh (id:Int) : ActorSelection = {
-          var remote:ActorSelection = null
-          if (id >= nodesAlive.length){
-               remote = getActorById(0)
-          } else {
-               remote = getActorById(id)
-          }
-          return remote
+     def getActorById(nodeId:Int) : ActorSelection = {
+          return context.actorSelection("akka.tcp://LeaderSystem" + terminaux(nodeId).id + "@" + terminaux(nodeId).ip + ":" + terminaux(nodeId).port + "/user/Node/electionActor")
+     }
+     
+     def getNeigh (nodes:List[Int]) : ActorSelection = {
+          return getActorById(nodes((nodes.indexOf(this.id)+1)%(nodes.size))) // si on dépasse la capacité : 0
      }
 
      def receive = {
@@ -59,31 +43,49 @@ class ElectionActor (val id:Int, val terminaux:List[Terminal]) extends Actor {
           }
 
           case StartWithNodeList (list) => {
+               father ! Message ("Patientez...")
+               Thread.sleep(2000) // si ça va trop vite, ça casse tout
                if (list.isEmpty) {
                     this.nodesAlive = this.nodesAlive:::List(id)
                }
                else {
                     this.nodesAlive = list
                }
-
-               // Debut de l'algorithme d'election
+               status match {
+                    case Passive() =>
+                    case _ => { // si c'est pas la première fois qu'on fait une election
+                         status = Passive()
+                    }
+               }
                self ! Initiate
           }
 
           case Initiate => {
-               val r = getNeigh(this.id)
-               r ! ALG (nodesAlive,this.id)
+               status match {
+                    case Passive() => {
+                         println("PASSIVE")
+                         status = new Candidate()
+                         candSucc = -1
+                         candPred = -1
+                         if(nodesAlive.length == 1) {
+                              status = new Waiting()
+                              self ! AVSRSP(List(),id)
+                         } else {
+                              val r = getNeigh(nodesAlive)
+                              r ! ALG (nodesAlive,this.id)
+                         }
+                         
+                    }
+                    case _ =>
+               }
           }
-// je passe des listes en arguments mais je les utilise pas
-// je sais pas a quoi elles servent
-// c'est la specification du prof
 
           case ALG (list, init) => {
                status match {
                     case Passive() => {
                          status = new Dummy ()
-                         val r = getNeigh(this.id)
-                         r ! ALG (nodesAlive,init)
+                         val r = getNeigh(list)
+                         r ! ALG (list,init)
                     }
                     case Candidate() => {
                          candPred = init
@@ -92,16 +94,18 @@ class ElectionActor (val id:Int, val terminaux:List[Terminal]) extends Actor {
                                    if(candSucc == -1) {
                                         status = new Waiting ()
                                         val r = getActorById(init)
-                                        r ! AVS (nodesAlive,this.id)
+                                        r ! AVS (list,this.id)
                                    } else {
                                         val r = getActorById(candSucc)
-                                        r ! AVSRSP (nodesAlive,candPred)
+                                        r ! AVSRSP (list,candPred)
                                         status = new Dummy ()
                                    }
                               }
                               case b if b == init => {
                                    status = new Leader ()
+                                   father ! LeaderChanged (this.id)
                               }
+                              case _ =>
                          }
                     }
                     case _ =>
@@ -115,7 +119,7 @@ class ElectionActor (val id:Int, val terminaux:List[Terminal]) extends Actor {
                               candSucc = j
                          } else {
                               val r = getActorById (j)
-                              r ! AVSRSP (nodesAlive,candPred)
+                              r ! AVSRSP (list,candPred)
                               status = new Dummy()
                          }
                     }
@@ -129,19 +133,20 @@ class ElectionActor (val id:Int, val terminaux:List[Terminal]) extends Actor {
                status match {
                     case Waiting() => {
                          if (this.id == k) {
-                              status = new Leader()
+                              status = new Leader ()
+                              father ! LeaderChanged (this.id)
                          } else {
                               candPred = k
                               if (candSucc == -1){
                                    if (k < this.id) {
                                         status = new Waiting ()
                                         val r = getActorById (k)
-                                        r ! AVS (nodesAlive,this.id)
+                                        r ! AVS (list,this.id)
                                    }
                               } else {
                                    status = new Dummy()
                                    val r = getActorById (candSucc)
-                                   r ! AVSRSP (nodesAlive,k)
+                                   r ! AVSRSP (list,k)
                               }
                          }
                     }
