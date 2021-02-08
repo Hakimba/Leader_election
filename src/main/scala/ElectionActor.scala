@@ -125,6 +125,7 @@ class ElectionActor (val id:Int, val terminaux:List[Terminal]) extends Actor {
                     case Waiting () => {
                          candSucc = j
                     }
+                    case _ =>
                }
           }
 
@@ -149,6 +150,7 @@ class ElectionActor (val id:Int, val terminaux:List[Terminal]) extends Actor {
                               }
                          }
                     }
+                    case _ =>
                }
           }
 
